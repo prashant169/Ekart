@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: ekart
-          image: prashantphad45/ekart:20250704151010
+          image: prashantphad45/ekart:20250704151814
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8070   # The port your Spring Boot app runs on
