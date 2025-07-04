@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: ekart
-          image: prashantphad45/ekart:1.1.1  # ✅ Argo CD Image Updater will replace this tag with latest like :1.0.2
+          image: prashantphad45/ekart:latest  # ✅ Argo CD Image Updater will replace this tag with latest like :1.0.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8070  # The port your Spring Boot app runs on
