@@ -21,6 +21,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Set image tag with timestamp
+        id: vars
+        run: echo "TAG=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
     - name: Compile the code
       run: mvn compile
 
@@ -32,9 +36,9 @@ jobs:
 
     - name: Docker login
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      
-    - name: Build Docker image
-      run: docker build -t $IMAGE_NAME -f docker/Dockerfile .
+
+    - name: Build Docker image with dynamic tag
+        run: docker build -t $IMAGE_NAME:${{ env.TAG }} -f docker/Dockerfile .
 
     - name: Push Docker image
-      run: docker push $IMAGE_NAME
+       run: docker push $IMAGE_NAME:${{ env.TAG }}
