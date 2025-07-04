@@ -29,7 +29,7 @@ spec:
               port: 8070
             initialDelaySeconds: 10
             periodSeconds: 5
-          livenessProbe:            # ✅ Optional: Ensures container is alive and responsive
+          livenessProbe:            ## ✅ Optional: Ensures container is alive and responsive
             httpGet:
               path: /
               port: 8070
