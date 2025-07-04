@@ -1,12 +1,15 @@
+# ----------------- DEPLOYMENT -----------------------
 apiVersion: apps/v1
-kind: Deployment # Kubernetes resource kind we are creating
+kind: Deployment
 metadata:
   name: ekart-deployment
+  labels:                        # ✅ Added labels to metadata for better K8s identification
+    app: ekart
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: ekart
-  replicas: 2 # Number of replicas that will be created for this deployment
   template:
     metadata:
       labels:
@@ -14,23 +17,43 @@ spec:
     spec:
       containers:
         - name: ekart
-          image: prashantphad45/ekart:latest # Image that will be used to containers in the cluster
+          image: prashantphad45/ekart:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8070 # The port that the container is running on in the cluster
+            - containerPort: 8070
 
+          # ✅ Added livenessProbe to check if app is still running
+          #    If this fails, the container is restarted
+          livenessProbe:
+            httpGet:
+              path: /actuator/health   # Change this if your app uses a different health endpoint
+              port: 8070
+            initialDelaySeconds: 30    # Wait 30s before starting liveness checks
+            periodSeconds: 10          # Check every 10s
+
+          # ✅ Added readinessProbe to check if app is ready to receive traffic
+          #    If this fails, the pod won't receive traffic
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8070
+            initialDelaySeconds: 15    # Wait 15s before checking if the app is ready
+            periodSeconds: 5           # Check every 5s
 
 ---
 
-apiVersion: v1 # Kubernetes API version
-kind: Service # Kubernetes resource kind we are creating
-metadata: # Metadata of the resource kind we are creating
+# ----------------- SERVICE -----------------------
+apiVersion: v1
+kind: Service
+metadata:
   name: ekart-ssvc
+  labels:                        # ✅ Added metadata labels for clarity and selection
+    app: ekart
 spec:
   selector:
     app: ekart
   ports:
-    - protocol: "TCP"
-      port: 8070 # The port that the service is running on in the cluster
-      targetPort: 8070 # The port exposed by the service
-  type: LoadBalancer # type of the service.
+    - protocol: TCP
+      port: 8070
+      targetPort: 8070
+  type: LoadBalancer             # ✅ Correct — exposes your service externally (on cloud or with Minikube tunnel)
