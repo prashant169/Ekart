@@ -50,7 +50,7 @@ metadata:
 spec:
   selector:
     app: ekart
-  type: LoadBalancer  # ✅ Will expose your app outside the cluster (if supported by your environment)
+  type: NodePort #type: LoadBalancer  #  Will expose your app outside the cluster (if supported by your environment)
   ports:
     - name: http
       protocol: TCP
