@@ -1,12 +1,17 @@
+# --------------------------------------------
+# Kubernetes Deployment for Ekart Application
+# --------------------------------------------
 apiVersion: apps/v1
-kind: Deployment # Kubernetes resource kind we are creating
+kind: Deployment
 metadata:
   name: ekart-deployment
+  labels:
+    app: ekart
 spec:
+  replicas: 2  # Run 2 pods
   selector:
     matchLabels:
       app: ekart
-  replicas: 2 # Number of replicas that will be created for this deployment
   template:
     metadata:
       labels:
@@ -14,23 +19,40 @@ spec:
     spec:
       containers:
         - name: ekart
-          image: prashantphad45/ekart:latest # Image that will be used to containers in the cluster
+          image: prashantphad45/ekart:latest  # ✅ Argo CD Image Updater will replace this tag with latest like :1.0.2
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8070 # The port that the container is running on in the cluster
-
+            - containerPort: 8070  # The port your Spring Boot app runs on
+          readinessProbe:           # ✅ Optional: Helps determine when the pod is ready to serve traffic
+            httpGet:
+              path: /
+              port: 8070
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:            # ✅ Optional: Ensures container is alive and responsive
+            httpGet:
+              path: /
+              port: 8070
+            initialDelaySeconds: 15
+            periodSeconds: 10
 
 ---
 
-apiVersion: v1 # Kubernetes API version
-kind: Service # Kubernetes resource kind we are creating
-metadata: # Metadata of the resource kind we are creating
+# --------------------------------------------
+# Kubernetes Service for Ekart Application
+# --------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
   name: ekart-ssvc
+  labels:
+    app: ekart
 spec:
   selector:
     app: ekart
+  type: LoadBalancer  # ✅ Will expose your app outside the cluster (if supported by your environment)
   ports:
-    - protocol: "TCP"
-      port: 8070 # The port that the service is running on in the cluster
-      targetPort: 8070 # The port exposed by the service
-  type: LoadBalancer # type of the service.
+    - name: http
+      protocol: TCP
+      port: 8070         # The port exposed by the service
+      targetPort: 8070   # The port your app container listens on
