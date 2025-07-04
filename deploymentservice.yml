@@ -22,7 +22,7 @@ spec:
           image: prashantphad45/ekart:20250704124756
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8070  # The port your Spring Boot app runs on
+            - containerPort: 8070  ## The port your Spring Boot app runs on
           readinessProbe:           # ✅ Optional: Helps determine when the pod is ready to serve traffic
             httpGet:
               path: /
