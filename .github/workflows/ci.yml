@@ -8,7 +8,7 @@ env:
   IMAGE_NAME: prashantphad45/ekart
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -51,3 +51,17 @@ jobs:
       # Step 9: Push Docker image to Docker Hub
       - name: Push Docker image
         run: docker push $IMAGE_NAME:${{ env.TAG }}
+
+      # Step 10: Update image tag in deployment YAML file
+      - name: Update image tag in Kubernetes deployment
+        run: |
+          sed -i "s|image: $IMAGE_NAME:.*|image: $IMAGE_NAME:${{ env.TAG }}|g" deploymentservice.yaml
+
+      # Step 11: Commit and push updated deployment YAML to repo
+      - name: Commit and push updated deployment file
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add deploymentservice.yaml
+          git commit -m "CI: Update image tag to ${{ env.TAG }}"
+          git push origin main
