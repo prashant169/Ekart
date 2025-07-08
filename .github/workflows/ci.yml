@@ -32,6 +32,16 @@ jobs:
       - name: Compile the code
         run: mvn compile
 
+      # 👉 Step 5: SonarQube Analysis
+      - name: SonarQube Code Analysis
+        env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+        mvn sonar:sonar \
+          -Dsonar.projectKey=ekart \
+          -Dsonar.host.url=http://<http://localhost:9000> \
+          -Dsonar.login=$SONAR_TOKEN 
+
       # Step 5: Skip test phase (optional)
       - name: Skip test phase (intentionally)
         run: echo "Skipping test cases using -DskipTests=true"
