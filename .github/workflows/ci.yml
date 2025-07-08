@@ -40,7 +40,7 @@ jobs:
         mvn sonar:sonar \
           -Dsonar.projectKey=ekart \
           -Dsonar.host.url=http://<http://localhost:9000> \
-          -Dsonar.login=$SONAR_TOKEN 
+          -Dsonar.login=$SONAR_TOKEN \
 
       # Step 5: Skip test phase (optional)
       - name: Skip test phase (intentionally)
