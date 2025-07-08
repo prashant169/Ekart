@@ -35,12 +35,13 @@ jobs:
       # 👉 Step 5: SonarQube Analysis
       - name: SonarQube Code Analysis
         env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
-        mvn sonar:sonar \
-          -Dsonar.projectKey=ekart \
-          -Dsonar.host.url=http://<http://localhost:9000> \
-          -Dsonar.login=$SONAR_TOKEN \
+          mvn sonar:sonar \
+            -Dsonar.projectKey=ekart \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKEN
 
       # Step 5: Skip test phase (optional)
       - name: Skip test phase (intentionally)
