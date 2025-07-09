@@ -194,15 +194,30 @@ A complete **CI/CD pipeline** for the Java-based **Ekart** application using **G
 ## 🗂️ Repository Structure
 
 ```
-Ekart/
-├── .github/workflows/docker-build.yml   # GitHub Actions CI pipeline
-├── k8s/                                 # Kubernetes YAMLs for Ekart
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── ekart-app.yaml                   # Argo CD Application
-├── Dockerfile
-├── README.md
-└── src/                                 # Java application code
+ Ekart/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                   # GitHub Actions CI: builds & pushes Docker image, updates deployment
+│
+├── .mvn/wrapper/                    # Maven wrapper files for building Java app
+│
+├── docker/                          # (Optional) Docker-related configurations/scripts
+│
+├── scripts/                         # Helper shell scripts or automation tools
+│
+├── src/                             # Java source code (likely Spring Boot)
+│   └── main/java/...                # Core application packages (controllers, services, etc.)
+│
+├── argo-app.yaml                    # Argo CD Application manifest (GitOps configuration)
+├── deploymentservice.yml           # Kubernetes Deployment + Service definition (with image tag)
+│
+├── Dockerfile                       # Dockerfile to containerize the Java app
+├── pom.xml                          # Maven build configuration
+├── .gitignore                       # Files and directories ignored by Git
+├── LICENSE                          # Project license
+└── README.md                        # Project overview and instructions
+
+
 ```
 
 ---
