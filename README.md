@@ -165,3 +165,161 @@ jdbc:h2:mem:shopping_cart_db
 
 In `/src/main/resources/application.properties` file it is possible to change both
 web interface url path, as well as the datasource url.
+______________________________________________________________________________________________________________
+# 🚀 Ekart Java App – Local CI/CD with GitHub Actions & Argo CD
+
+A complete **CI/CD pipeline** for the Java-based **Ekart** application using **GitHub Actions** for building and pushing Docker images, and **Argo CD** for automated deployment via GitOps—all running **locally** using Docker Desktop or Minikube.
+
+---
+
+## 📌 Problem Statement
+
+> Set up a complete CI/CD pipeline for the Java-based Ekart application using GitHub Actions for building and pushing Docker images to Docker Hub, and Argo CD for automated deployment via GitOps. All components—including Kubernetes, Argo CD, and the application—must be installed and configured locally, ensuring the entire pipeline works end-to-end without relying on cloud services.
+
+---
+
+## 🧰 Tech Stack
+
+| Component      | Tool/Service              |
+|----------------|---------------------------|
+| CI             | GitHub Actions            |
+| CD             | Argo CD                   |
+| Container Reg. | Docker Hub                |
+| App            | Java (Ekart)              |
+| Cluster        | Minikube or Docker Desktop |
+| Git Repo       | https://github.com/prashant169/Ekart.git |
+
+---
+
+## 🗂️ Repository Structure
+
+```
+Ekart/
+├── .github/workflows/docker-build.yml   # GitHub Actions CI pipeline
+├── k8s/                                 # Kubernetes YAMLs for Ekart
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── ekart-app.yaml                   # Argo CD Application
+├── Dockerfile
+├── README.md
+└── src/                                 # Java application code
+```
+
+---
+
+## 🔧 Prerequisites
+
+Install the following locally:
+
+- Docker Desktop (with Kubernetes enabled) OR Minikube
+- kubectl
+- Argo CD CLI (optional)
+- Git
+- Java + Maven
+- GitHub + Docker Hub accounts
+
+---
+
+## 🚀 Step-by-Step Setup
+
+### 1️⃣ Install Argo CD Locally
+
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+### 2️⃣ Access Argo CD UI
+
+```bash
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+Visit: https://localhost:8080  
+Login: `admin`  
+Password:
+
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d && echo
+```
+
+---
+
+### 3️⃣ Create Ekart Kubernetes Manifests
+
+Make sure you have:
+- `deployment.yaml`
+- `service.yaml`
+- `ekart-app.yaml`
+
+in the `k8s/` directory of your repo.
+
+---
+
+### 4️⃣ Configure GitHub Actions CI
+
+Create `.github/workflows/docker-build.yml` in your Ekart repo.
+
+Also add these GitHub Secrets:
+- `DOCKER_USERNAME`
+- `DOCKER_PASSWORD`
+
+---
+
+### 5️⃣ Sync App in Argo CD UI
+
+- Open Argo CD UI
+- Select `ekart-app`
+- Click **Sync**
+- Enable:
+  - Prune ✅
+  - Apply out-of-sync only ✅
+  - Auto-create namespace ✅
+
+---
+
+### 6️⃣ Verify Deployment
+
+```bash
+kubectl get pods -n ekart
+kubectl get svc -n ekart
+minikube service ekart-ssvc -n ekart
+```
+
+---
+
+## 🔄 Optional: Auto Image Tag Sync with Argo CD Image Updater
+
+Use annotations like:
+
+```yaml
+metadata:
+  annotations:
+    argocd-image-updater.argoproj.io/image.update-strategy: latest
+    argocd-image-updater.argoproj.io/write-back-method: git
+    argocd-image-updater.argoproj.io/image-list: ekart=prashantphad45/ekart
+```
+
+---
+
+## ✅ Final Result
+
+🎯 GitHub Actions → Docker Hub → Argo CD → Local Kubernetes
+
+Fully automated and cloud-free CI/CD pipeline.
+
+---
+
+## 👨‍💻 Author
+
+**Prashant**  
+DevOps Engineer | GitOps Enthusiast | Java CI/CD Specialist
+
+![image](https://github.com/user-attachments/assets/8c12f338-4c80-4d01-b25d-3e68ee8b486b)
+
+
+![image](https://github.com/user-attachments/assets/5b63327f-0d58-4b45-a186-29a93313e9e8)  
+
+
+
+
