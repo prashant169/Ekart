@@ -219,7 +219,10 @@ A complete **CI/CD pipeline** for the Java-based **Ekart** application using **G
 
 
 ```
-
+This project showcases complete local DevOps pipelines for a Java-based Ekart application:
+CI with GitHub Actions (Docker build + Docker Hub push)
+CD with Argo CD (automated GitOps sync to Kubernetes)
+All tools run entirely locally, leveraging Minikube or Docker Desktop with Kubernetes enabled — no cloud services required.
 ---
 
 ## 🔧 Prerequisites
